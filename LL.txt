@@ -1,0 +1,65 @@
+LISTA DE PRODUCOES DE CC-2021-2
+
+PROGRAM → (STATEMENT | FUNCLIST)?
+FUNCLIST → FUNCDEF FUNCLIST | FUNCDEF
+FUNCDEF → def ident(PARAMLIST){STATELIST}
+PARAMLIST → (( int | float | string ) ident, PARAMLIST | ( int | float | string ) ident)?
+STATEMENT → (VARDECL; | ATRIBSTAT; | PRINTSTAT; | READSTAT; | RETURNSTAT; | IFSTAT | FORSTAT | {STATELIST} | break ; | ;)
+VARDECL → ( int | float | string ) ident ([int constant])∗
+ATRIBSTAT → LV ALUE = ( EXPRESSION | ALLOCEXPRESSION | FUNCCALL)
+FUNCCALL → ident(PARAMLISTCALL)
+PARAMLISTCALL → (ident, PARAMLISTCALL | ident)?
+PRINTSTAT → print EXPRESSION
+READSTAT → read LV ALUE
+RETURNSTAT → return
+IFSTAT → if( EXPRESSION ) STATEMENT (else STATEMENT)?
+FORSTAT → for(ATRIBSTAT; EXPRESSION; ATRIBSTAT)
+                STATEMENT
+STATELIST → STATEMENT (STATELIST)?
+ALLOCEXPRESSION → new (int | float | string) ([ NUMEXPRESSION ])+
+EXPRESSION → NUMEXPRESSION(( < | > | <= | >= | == | ! =) NUMEXPRESSION)?
+NUMEXPRESSION → TERM ((+ |−) TERM)∗
+TERM → UNARY EXPR(( ∗ | / | %) UNARY EXPR)∗
+UNARY EXPR → ((+ |−))? FACTOR
+FACTOR → (int constant | float constant | string constant | null | LV ALUE |(NUMEXPRESSION))
+LV ALUE → ident( [NUMEXPRESSION] )∗
+
+LISTA DE SIMBOLOS TERMINAIS DE CC-2021-2
+
+def
+ident
+(
+)
+{
+}
+int
+float
+string
+,
+;
+break
+[
+]
+=
+print
+read
+return 
+if
+else 
+for
+new
+<
+>
+<=
+>=
+==
+!=
++
+-
+*
+/
+%
+int_constant
+float_constant
+string_constan
+null
