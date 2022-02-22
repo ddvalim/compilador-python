@@ -4,8 +4,8 @@ class TabelaSimbolos:
 
     ## entrada deve ser um array de tres atributos
     ## [TIPO_TOKEN, VALOR, LINHA]
-    def adicionaEntrada(self, entrada):
+    def adiciona_entrada(self, entrada):
         self.__tabela.append(entrada)
     
-    def recuperaTabela(self):
+    def recupera_tabela(self):
         return self.__tabela
