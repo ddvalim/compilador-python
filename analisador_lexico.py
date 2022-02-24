@@ -44,6 +44,7 @@
 
 # Outros
 # ident - Representa um identificador
+
 # Exemplo:
 # int C = 4;
 # C eh um token do tipo ident
@@ -53,16 +54,15 @@
 # Metodo analisa retorna LISTA DE TOKENS e TABELA DE SIMBOLOS
 
 # Bibliotecas para entrada e saida de arquivos
-from re import S
 import sys
 import os.path
 import string
 from tabela_simbolos import TabelaSimbolos
 
 
-class AnalisadorLexico():
-    def __init__(self):
-        self.__entrada = "entrada.txt"
+class AnalisadorLexico:
+    def __init__(self, arquivo):
+        self.__entrada = arquivo
         self.__lista_tokens = []
         self.__tabela_simbolos = TabelaSimbolos()
 
@@ -80,14 +80,14 @@ class AnalisadorLexico():
 
     def eh_delimitador(self, caractere):
         delimitadores = [
-            {'nome': 'RPAREN', 'token': '('},
-            {'nome': 'LPAREN', 'token': ')'},
-            {'nome': 'LCHAVE', 'token': '{'},
-            {'nome': 'RCHAVE', 'token': '}'},
+            {'nome': 'DPAREN', 'token': '('},
+            {'nome': 'EPAREN', 'token': ')'},
+            {'nome': 'ECHAVE', 'token': '{'},
+            {'nome': 'ECHAVE', 'token': '}'},
             {'nome': 'VIRGULA', 'token': ','},
             {'nome': 'PONTOVIRGULA', 'token': ';'},
-            {'nome': 'LCOL', 'token': '['},
-            {'nome': 'RCOL', 'token': ']'}
+            {'nome': 'ECOL', 'token': '['},
+            {'nome': 'DCOL', 'token': ']'}
         ]
 
         eh_delimitador = list(
@@ -180,6 +180,111 @@ class AnalisadorLexico():
         else:
             return False
 
+    def eh_simbolo(self, caractere):
+        simbolos = [
+            {'nome': 'EXCLAMACAO', 'token': '!'},
+            {'nome': 'ASPA_DUPLA', 'token': '"'},
+            {'nome': 'CERQUILHA', 'token': '#'},
+            {'nome': 'DOLAR', 'token': '$'},
+            {'nome': 'PORCENTAGEM', 'token': '%'},
+            {'nome': 'E_COMERCIAL', 'token': '&'},
+            {'nome': 'ASPA_SIMPLES', 'token': "'"},
+            {'nome': 'DPAREN', 'token': ')'},
+            {'nome': 'E_PAREN', 'token': '('},
+            {'nome': 'ASTERISCO', 'token': '*'},
+            {'nome': 'MAIS', 'token': '+'},
+            {'nome': 'VIRGULA', 'token': ','},
+            {'nome': 'MENOS', 'token': '-'},
+            {'nome': 'PONTO', 'token': '.'},
+            {'nome': 'BARRA', 'token': '/'},
+            {'nome': 'BARRA_INVERTIDA', 'token': r"'\'"},
+            {'nome': 'ZERO', 'token': '0'},
+            {'nome': 'UM', 'token': '1'},
+            {'nome': 'DOIS', 'token': '2'},
+            {'nome': 'TRES', 'token': '3'},
+            {'nome': 'QUATRO', 'token': '4'},
+            {'nome': 'CINCO', 'token': '5'},
+            {'nome': 'SEIS', 'token': '6'},
+            {'nome': 'SETE', 'token': '7'},
+            {'nome': 'OITO', 'token': '8'},
+            {'nome': 'NOVE', 'token': '9'},
+            {'nome': 'VIRGULA', 'token': ','},
+            {'nome': 'PONTOVIRGULA', 'token': ';'},
+            {'nome': 'ATRIBUICAO', 'token': '='},
+            {'nome': 'MENOR', 'token': '<'},
+            {'nome': 'MAIOR', 'token': '>'},
+            {'nome': 'INTERROGACAO', 'token': '?'},
+            {'nome': 'ARROBA', 'token': '@'},
+            {'nome': 'ECOL', 'token': '['},
+            {'nome': 'DCOL', 'token': ']'},
+            {'nome': 'CIRCUNFLEXO', 'token': '^'},
+            {'nome': 'UNDERLINE', 'token': '_'},
+            {'nome': 'GRAVE', 'token': '`'},
+            {'nome': 'PIPE', 'token': '|'},
+            {'nome': 'ECHAVE', 'token': '{'},
+            {'nome': 'ECHAVE', 'token': '}'},
+            {'nome': 'TIL', 'token': '~'},
+            {'nome': 'A_MAIUSCULO', 'token': 'A'},
+            {'nome': 'B_MAIUSCULO', 'token': 'B'},
+            {'nome': 'C_MAIUSCULO', 'token': 'C'},
+            {'nome': 'D_MAIUSCULO', 'token': 'D'},
+            {'nome': 'E_MAIUSCULO', 'token': 'E'},
+            {'nome': 'F_MAIUSCULO', 'token': 'F'},
+            {'nome': 'G_MAIUSCULO', 'token': 'G'},
+            {'nome': 'H_MAIUSCULO', 'token': 'H'},
+            {'nome': 'J_MAIUSCULO', 'token': 'J'},
+            {'nome': 'K_MAIUSCULO', 'token': 'K'},
+            {'nome': 'L_MAIUSCULO', 'token': 'L'},
+            {'nome': 'M_MAIUSCULO', 'token': 'M'},
+            {'nome': 'N_MAIUSCULO', 'token': 'N'},
+            {'nome': 'O_MAIUSCULO', 'token': 'O'},
+            {'nome': 'P_MAIUSCULO', 'token': 'P'},
+            {'nome': 'Q_MAIUSCULO', 'token': 'Q'},
+            {'nome': 'R_MAIUSCULO', 'token': 'R'},
+            {'nome': 'S_MAIUSCULO', 'token': 'S'},
+            {'nome': 'T_MAIUSCULO', 'token': 'T'},
+            {'nome': 'U_MAIUSCULO', 'token': 'U'},
+            {'nome': 'V_MAIUSCULO', 'token': 'V'},
+            {'nome': 'W_MAIUSCULO', 'token': 'W'},
+            {'nome': 'X_MAIUSCULO', 'token': 'X'},
+            {'nome': 'Y_MAIUSCULO', 'token': 'Y'},
+            {'nome': 'Z_MAIUSCULO', 'token': 'Z'},
+            {'nome': 'A_MINUSCULO', 'token': 'a'},
+            {'nome': 'B_MINUSCULO', 'token': 'b'},
+            {'nome': 'C_MINUSCULO', 'token': 'c'},
+            {'nome': 'D_MINUSCULO', 'token': 'd'},
+            {'nome': 'E_MINUSCULO', 'token': 'e'},
+            {'nome': 'F_MINUSCULO', 'token': 'f'},
+            {'nome': 'G_MINUSCULO', 'token': 'g'},
+            {'nome': 'H_MINUSCULO', 'token': 'h'},
+            {'nome': 'I_MINUSCULO', 'token': 'i'},
+            {'nome': 'J_MINUSCULO', 'token': 'j'},
+            {'nome': 'K_MINUSCULO', 'token': 'k'},
+            {'nome': 'L_MINUSCULO', 'token': 'l'},
+            {'nome': 'M_MINUSCULO', 'token': 'm'},
+            {'nome': 'N_MINUSCULO', 'token': 'n'},
+            {'nome': 'O_MINUSCULO', 'token': 'o'},
+            {'nome': 'P_MINUSCULO', 'token': 'p'},
+            {'nome': 'Q_MINUSCULO', 'token': 'q'},
+            {'nome': 'R_MINUSCULO', 'token': 'r'},
+            {'nome': 'S_MINUSCULO', 'token': 's'},
+            {'nome': 'T_MINUSCULO', 'token': 't'},
+            {'nome': 'U_MINUSCULO', 'token': 'u'},
+            {'nome': 'V_MINUSCULO', 'token': 'v'},
+            {'nome': 'W_MINUSCULO', 'token': 'w'},
+            {'nome': 'X_MINUSCULO', 'token': 'x'},
+            {'nome': 'Y_MINUSCULO', 'token': 'y'},
+            {'nome': 'Z_MINUSCULO', 'token': 'z'}
+        ]
+
+        eh_simbolo = list(
+            filter(lambda item: item['token'] == caractere, simbolos))
+
+        if len(eh_simbolo) == 1:
+            return eh_simbolo[0]
+        else:
+            return False
+
     def analisador(self):
         if not os.path.exists(self.__entrada):
             raise Exception(
@@ -201,6 +306,7 @@ class AnalisadorLexico():
                 if ((indice_caractere + 1) < tamanho_linha):
                     prox_caractere = linha[indice_caractere]
 
+                # Verifica se o caractere_atual eh um delimitador
                 if (self.eh_delimitador(caractere_atual)):
                     self.adiciona_token(caractere_atual)
 
@@ -209,7 +315,23 @@ class AnalisadorLexico():
                     self.__tabela_simbolos.adiciona_entrada(
                         [entrada['nome'], entrada['token'], numero_linha])
 
-                if (prox_caractere != None and self.eh_operador(caractere_atual)):
+                    indice_caractere += 1
+                    continue
+
+                # Verifica se o caractere_atual+prox_caractere formam um operador
+                elif (prox_caractere != None and self.eh_operador(caractere_atual+prox_caractere)):
+                    self.adiciona_token(caractere_atual+prox_caractere)
+
+                    entrada = self.eh_operador(caractere_atual+prox_caractere)
+
+                    self.__tabela_simbolos.adiciona_entrada(
+                        [entrada['nome'], entrada['token'], numero_linha])
+
+                    indice_caractere += 1
+                    continue
+
+                # Verifica se o caractere_atual eh um operador
+                elif self.eh_operador(caractere_atual):
                     self.adiciona_token(caractere_atual)
 
                     entrada = self.eh_operador(caractere_atual)
@@ -217,20 +339,66 @@ class AnalisadorLexico():
                     self.__tabela_simbolos.adiciona_entrada(
                         [entrada['nome'], entrada['token'], numero_linha])
 
-                # Se um caractere for ', ele precisa ser fechado com '
-                if (caractere_atual == string.punctuation[6]):
-                    if (linha[i+1] == '\n') or (not (string.punctuation[6] in linha[i+1:])):
+                    indice_caractere += 1
+                    continue
+
+                # Se um caractere for ", ele precisa ser fechado com "
+                elif (caractere_atual == string.punctuation[1]):
+                    indice_caractere += 1
+                    if (linha[indice_caractere:].find(string.punctuation[1]) == -1):
                         raise Exception(
-                            f'Erro léxico! Caractere não fechado - Linha: {numero_linha}')
-                    elif self.eh_simbolo(linha[i+1]) and linha[i+1] != string.punctuation[6] and linha[i+2] == string.punctuation[6]:
-                        self.adiciona_token(caractere_atual)
-
-                        entrada = self.eh_operador(caractere_atual)
-
-                        self.__tabela_simbolos.adiciona_entrada(
-                            [entrada['nome'], entrada['token'], numero_linha])
-
-                        i += 2
+                            f'Erro léxico! String não fechada - Linha: {numero_linha} - Coluna: {linha[i]}')
                     else:
-                        raise Exception(
-                            f'Erro léxico! - Tamanho ou simbolo de caractere inválido - Linha: {numero_linha}')
+                        fim_string = indice_caractere + \
+                            linha[indice_caractere:].find(
+                                string.punctuation[1])
+                        nova_string = linha[i:fim_string]
+                        indice_caractere = fim_string
+                        for caractere in nova_string:
+                            if (not self.eh_simbolo(caractere)):
+                                raise Exception(
+                                    f'Erro léxico! - Tamanho ou simbolo de caractere inválido - Linha: {numero_linha} - Coluna: {linha[i]}')
+                        continue
+
+                # Se o caractere for letra, eu preciso checar se ele eh IDENT
+                elif (self.eh_letra(caractere_atual)):
+                    string = caractere_atual
+                    indice_caractere += 1
+
+                    while indice_caractere < tamanho_linha:
+                        c_atual = linha[indice_caractere]
+                        c_prox = None
+
+                        if (indice_caractere + 1 < tamanho_linha):
+                            c_prox = linha[indice_caractere+1]
+
+                        if (self.eh_letra(c_atual) or c_atual == '_' or self.eh_digito(c_atual)):
+                            string += c_atual
+
+                        elif (self.eh_delimitador(c_atual)):
+                            indice_caractere -= 1
+                            break
+
+                        elif (c_prox is not None and self.eh_operador(c_atual+c_prox)) or self.eh_operador(c_atual):
+                            i -= 1
+                            break
+
+                        elif (c_atual == ' '):
+                            break
+
+                    if (len(string) > 0):
+                        if (self.eh_reservada(string)):
+                            self.adiciona_token(string)
+
+                            entrada = self.eh_reservada(string)
+
+                            self.__tabela_simbolos.adiciona_entrada(
+                                [entrada['nome'], entrada['token'], numero_linha])
+                            continue
+                        else:
+                            self.adiciona_token('IDENT')
+
+                            self.__tabela_simbolos.adiciona_entrada(
+                                [string, 'IDENT', numero_linha])
+
+                ## TODO:  Adicionar a validacao de digito
