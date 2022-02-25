@@ -347,17 +347,20 @@ class AnalisadorLexico:
                     indice_caractere += 1
                     if (linha[indice_caractere:].find(string.punctuation[1]) == -1):
                         raise Exception(
-                            f'Erro léxico! String não fechada - Linha: {numero_linha} - Coluna: {linha[i]}')
+                            f'Erro léxico! String não fechada - Linha: {numero_linha} - Coluna: {indice_caractere}')
                     else:
                         fim_string = indice_caractere + \
                             linha[indice_caractere:].find(
                                 string.punctuation[1])
+
                         nova_string = linha[i:fim_string]
+
                         indice_caractere = fim_string
+
                         for caractere in nova_string:
                             if (not self.eh_simbolo(caractere)):
                                 raise Exception(
-                                    f'Erro léxico! - Tamanho ou simbolo de caractere inválido - Linha: {numero_linha} - Coluna: {linha[i]}')
+                                    f'Erro léxico! - Tamanho ou simbolo de caractere inválido - Linha: {numero_linha} - Coluna: {indice_caractere}')
                         continue
 
                 # Se o caractere for letra, eu preciso checar se ele eh IDENT
@@ -396,9 +399,53 @@ class AnalisadorLexico:
                                 [entrada['nome'], entrada['token'], numero_linha])
                             continue
                         else:
-                            self.adiciona_token('IDENT')
+                            self.adiciona_token('ident')
 
                             self.__tabela_simbolos.adiciona_entrada(
                                 [string, 'IDENT', numero_linha])
 
-                ## TODO:  Adicionar a validacao de digito
+                elif (self.eh_digito(caractere_atual)):
+                    string = caractere_atual
+                    indice_caractere += 1
+                    caractere_atual = linha[indice_caractere]
+
+                    nro_digitos_float = 0
+
+                    while (self.eh_digito(caractere_atual) and (indice_caractere + 1 < tamanho_linha)):
+                        string += caractere_atual
+                        indice_caractere += 1
+                        caractere_atual = linha[indice_caractere]
+
+                    if (caractere_atual == '.'):
+                        if ((indice_caractere + 1) < tamanho_linha):
+                            string += caractere_atual
+                            indice_caractere += 1
+                            caracter_atual = linha[i]
+
+                        while self.eh_digito(caractere_atual) and (indice_caractere + 1 < tamanho_linha):
+                            string += caracter_atual
+                            nro_digitos_float += 1
+
+                            indice_caractere += 1
+
+                            caractere_atual = linha[indice_caractere]
+
+                        if caractere_atual == '.' and linha[indice_caractere - 1] != self.eh_digito(linha[indice_caractere - 1]) and linha[indice_caractere + 1] != self.eh_digito(linha[indice_caractere + 1]):
+                            raise Exception(
+                                f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
+
+                        if (nro_digitos_float > 0):
+                            self.adiciona_token('float')
+
+                            self.__tabela_simbolos.adiciona_entrada(
+                                [string, 'FLOAT', numero_linha])
+                            continue
+                        else:
+                            raise Exception(
+                                f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
+                    else:
+                        self.adiciona_token('int')
+
+                        self.__tabela_simbolos.adiciona_entrada(
+                            [string, 'INT', numero_linha])
+                        continue
