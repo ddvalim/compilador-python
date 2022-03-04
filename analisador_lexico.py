@@ -57,6 +57,7 @@
 import sys
 import os.path
 import string
+import unidecode
 from tabela_simbolos import TabelaSimbolos
 
 
@@ -165,7 +166,7 @@ class AnalisadorLexico:
         ]
 
         eh_reservada = list(
-            filter(lambda item: item['token'] == palavra, reservadas))
+            filter(lambda item: item['token'] == palavra.lstrip(), reservadas))
 
         if len(eh_reservada) == 1:
             return eh_reservada[0]
@@ -286,29 +287,34 @@ class AnalisadorLexico:
             return False
 
     def analisador(self):
-        if not os.path.exists(self.__entrada):
-            raise Exception(
-                'Não foi possível encontrar um arquivo de entrada válido!')
 
         arquivo = open(self.__entrada, 'r')
 
         numero_linha = 1
-        linha = arquivo.readline()
+        linha = True
 
         while linha:
+            linha = arquivo.readline()
             indice_caractere = 0
             tamanho_linha = len(linha)
 
             while indice_caractere < tamanho_linha:
                 caractere_atual = linha[indice_caractere]
                 prox_caractere = None
+                if caractere_atual == " ":
+                    char = linha[indice_caractere]
+                    while char == " ":
+                        char = linha[indice_caractere+ 1]
+                        indice_caractere += 1
+                    continue
 
                 if ((indice_caractere + 1) < tamanho_linha):
-                    prox_caractere = linha[indice_caractere]
+                    prox_caractere = linha[indice_caractere+1]
 
                 # Verifica se o caractere_atual eh um delimitador
                 if (self.eh_delimitador(caractere_atual)):
                     self.adiciona_token(caractere_atual)
+                    _string = ""
 
                     entrada = self.eh_delimitador(caractere_atual)
 
@@ -327,7 +333,7 @@ class AnalisadorLexico:
                     self.__tabela_simbolos.adiciona_entrada(
                         [entrada['nome'], entrada['token'], numero_linha])
 
-                    indice_caractere += 1
+                    indice_caractere += 2
                     continue
 
                 # Verifica se o caractere_atual eh um operador
@@ -346,26 +352,30 @@ class AnalisadorLexico:
                 elif (caractere_atual == string.punctuation[1]):
                     indice_caractere += 1
                     if (linha[indice_caractere:].find(string.punctuation[1]) == -1):
-                        raise Exception(
-                            f'Erro léxico! String não fechada - Linha: {numero_linha} - Coluna: {indice_caractere}')
+                        raise Exception
                     else:
-                        fim_string = indice_caractere + \
-                            linha[indice_caractere:].find(
-                                string.punctuation[1])
+                        fim_string = indice_caractere +  linha[indice_caractere:].find(string.punctuation[1]) 
 
-                        nova_string = linha[i:fim_string]
+                        nova_string = linha[indice_caractere:fim_string]
 
+                        nova_string = unidecode.unidecode(nova_string)
                         indice_caractere = fim_string
 
                         for caractere in nova_string:
-                            if (not self.eh_simbolo(caractere)):
-                                raise Exception(
-                                    f'Erro léxico! - Tamanho ou simbolo de caractere inválido - Linha: {numero_linha} - Coluna: {indice_caractere}')
+                            if (not self.eh_simbolo(caractere) and not caractere == " "):
+                                raise Exception
+                        
+                        self.adiciona_token("string_constant")
+                        self.__tabela_simbolos.adiciona_entrada(
+                            ["STRING_CONSTANT", "string_constant", numero_linha]
+                        )
+                        indice_caractere +=1
                         continue
 
                 # Se o caractere for letra, eu preciso checar se ele eh IDENT
-                elif (self.eh_letra(caractere_atual)):
-                    string = caractere_atual
+                elif (self.eh_letra(caractere_atual) or caractere_atual == " "):
+                    _string = caractere_atual
+                    
                     indice_caractere += 1
 
                     while indice_caractere < tamanho_linha:
@@ -376,24 +386,31 @@ class AnalisadorLexico:
                             c_prox = linha[indice_caractere+1]
 
                         if (self.eh_letra(c_atual) or c_atual == '_' or self.eh_digito(c_atual)):
-                            string += c_atual
+                            _string += c_atual
+                            indice_caractere +=1
 
                         elif (self.eh_delimitador(c_atual)):
-                            indice_caractere -= 1
                             break
 
-                        elif (c_prox is not None and self.eh_operador(c_atual+c_prox)) or self.eh_operador(c_atual):
-                            i -= 1
+                        elif (c_prox is not None and self.eh_operador(c_atual+c_prox)): 
+                            _string = ""
+                            break
+                            
+                        elif (self.eh_operador(c_atual)):
+                            _string = ""
                             break
 
                         elif (c_atual == ' '):
                             break
+                        elif c_atual == "\n":
+                            break
 
-                    if (len(string) > 0):
-                        if (self.eh_reservada(string)):
-                            self.adiciona_token(string)
+                    if (len(_string) > 0):
+                        if (self.eh_reservada(_string)):
+                            entrada = self.eh_reservada(_string)
 
-                            entrada = self.eh_reservada(string)
+                            self.adiciona_token(entrada['token'])
+
 
                             self.__tabela_simbolos.adiciona_entrada(
                                 [entrada['nome'], entrada['token'], numero_linha])
@@ -405,25 +422,25 @@ class AnalisadorLexico:
                                 [string, 'IDENT', numero_linha])
 
                 elif (self.eh_digito(caractere_atual)):
-                    string = caractere_atual
+                    _string = caractere_atual
                     indice_caractere += 1
                     caractere_atual = linha[indice_caractere]
 
                     nro_digitos_float = 0
 
                     while (self.eh_digito(caractere_atual) and (indice_caractere + 1 < tamanho_linha)):
-                        string += caractere_atual
+                        _string += caractere_atual
                         indice_caractere += 1
                         caractere_atual = linha[indice_caractere]
 
                     if (caractere_atual == '.'):
                         if ((indice_caractere + 1) < tamanho_linha):
-                            string += caractere_atual
+                            _string += caractere_atual
                             indice_caractere += 1
-                            caracter_atual = linha[i]
+                            caractere_atual = linha[indice_caractere]
 
                         while self.eh_digito(caractere_atual) and (indice_caractere + 1 < tamanho_linha):
-                            string += caracter_atual
+                            _string += caractere_atual
                             nro_digitos_float += 1
 
                             indice_caractere += 1
@@ -431,21 +448,20 @@ class AnalisadorLexico:
                             caractere_atual = linha[indice_caractere]
 
                         if caractere_atual == '.' and linha[indice_caractere - 1] != self.eh_digito(linha[indice_caractere - 1]) and linha[indice_caractere + 1] != self.eh_digito(linha[indice_caractere + 1]):
-                            raise Exception(
-                                f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
-
+                            raise Exception
                         if (nro_digitos_float > 0):
-                            self.adiciona_token('float')
+                            self.adiciona_token('float_constant')
 
                             self.__tabela_simbolos.adiciona_entrada(
-                                [string, 'FLOAT', numero_linha])
+                                [_string, 'FLOAT_CONSTANT', numero_linha])
                             continue
                         else:
-                            raise Exception(
-                                f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
+                            raise 
                     else:
-                        self.adiciona_token('int')
+                        self.adiciona_token('int_constant')
 
                         self.__tabela_simbolos.adiciona_entrada(
-                            [string, 'INT', numero_linha])
+                            [_string, 'INT_CONSTANT', numero_linha])
                         continue
+                elif caractere_atual == "\n":
+                    break
