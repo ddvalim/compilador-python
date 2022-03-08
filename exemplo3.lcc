@@ -63,7 +63,7 @@ def principal()
         R3 = maximo(E, F);
         contador = contador + 1;
 
-        R_FINAL = R1 + R2 + R3;
+        R_FINAL = R1 + (R2 + R3);
         vetor[contador] = R_FINAL;
         iterador = iterador + 1;
     } else {
@@ -79,13 +79,13 @@ def principal()
         R3_ALT = multiplica(A, B);
         contador = contador + 1;
 
-        R_INTER = R1_ALT + R2_ALT + R3_ALT;
+        R_INTER = R1_ALT + (R2_ALT + R3_ALT);
 
         int R_VEZES_DOIS;
         int R_VEZES_TRES;
 
         R_VEZES_DOIS = R_INTER * 2;
-        R_VEZES_TRES = R_INTER * 3
+        R_VEZES_TRES = R_INTER * 3;
 
         int R_FINAL;
 

@@ -251,6 +251,7 @@ class AnalisadorSintatico:
     def eh_return(self):
         if self.token_atual == "return":
             self.set_indice(self.indice_atual + 1)
+            self.eh_expression()
             return True
         return False
     
