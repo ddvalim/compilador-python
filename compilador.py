@@ -9,7 +9,8 @@ else:
         lex = AnalisadorLexico(sys.argv[1])
         lex.analisador()
         lista_tokens = lex.recupera_lista_tokens()
-        sin = AnalisadorSintatico(lista_tokens, None)
+        sin = AnalisadorSintatico(lista_tokens, lex.recupera_tabela())
         sin.analisador()
+        print(f"Programa {sys.argv[1]} compilado com sucesso")
     except Exception as ex:
-        print(str(ex))
+        print(ex)

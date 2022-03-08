@@ -78,6 +78,9 @@ class AnalisadorLexico:
 
     def recupera_lista_tokens(self):
         return self.__lista_tokens
+    
+    def recupera_tabela(self):
+        return self.__tabela_simbolos
 
     def eh_delimitador(self, caractere):
         delimitadores = [
@@ -290,11 +293,12 @@ class AnalisadorLexico:
 
         arquivo = open(self.__entrada, 'r')
 
-        numero_linha = 1
+        numero_linha = 0
         linha = True
 
         while linha:
             linha = arquivo.readline()
+            numero_linha += 1
             indice_caractere = 0
             tamanho_linha = len(linha)
 
@@ -352,7 +356,7 @@ class AnalisadorLexico:
                 elif (caractere_atual == string.punctuation[1]):
                     indice_caractere += 1
                     if (linha[indice_caractere:].find(string.punctuation[1]) == -1):
-                        raise Exception
+                        raise Exception(f'Erro léxico! String não fechada - Linha: {numero_linha} - Coluna: {indice_caractere}')
                     else:
                         fim_string = indice_caractere +  linha[indice_caractere:].find(string.punctuation[1]) 
 
@@ -363,7 +367,7 @@ class AnalisadorLexico:
 
                         for caractere in nova_string:
                             if (not self.eh_simbolo(caractere) and not caractere == " "):
-                                raise Exception
+                                raise Exception(f'Erro léxico! - Tamanho ou simbolo de caractere inválido - Linha: {numero_linha} - Coluna: {indice_caractere}')
                         
                         self.adiciona_token("string_constant")
                         self.__tabela_simbolos.adiciona_entrada(
@@ -428,6 +432,7 @@ class AnalisadorLexico:
 
                     nro_digitos_float = 0
 
+
                     while (self.eh_digito(caractere_atual) and (indice_caractere + 1 < tamanho_linha)):
                         _string += caractere_atual
                         indice_caractere += 1
@@ -447,8 +452,12 @@ class AnalisadorLexico:
 
                             caractere_atual = linha[indice_caractere]
 
-                        if caractere_atual == '.' and linha[indice_caractere - 1] != self.eh_digito(linha[indice_caractere - 1]) and linha[indice_caractere + 1] != self.eh_digito(linha[indice_caractere + 1]):
-                            raise Exception
+                        if (indice_caractere + 1 < tamanho_linha) and self.eh_digito(linha[indice_caractere + 1]):
+                            raise Exception(f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
+
+                        elif not self.eh_operador(caractere_atual) and caractere_atual != " " and caractere_atual != ";" and caractere_atual != "\n":
+                            raise Exception(f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
+
                         if (nro_digitos_float > 0):
                             self.adiciona_token('float_constant')
 
@@ -456,7 +465,7 @@ class AnalisadorLexico:
                                 [_string, 'FLOAT_CONSTANT', numero_linha])
                             continue
                         else:
-                            raise 
+                            raise Exception(f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
                     else:
                         self.adiciona_token('int_constant')
 

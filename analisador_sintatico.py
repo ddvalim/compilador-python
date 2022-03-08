@@ -64,7 +64,7 @@ class AnalisadorSintatico:
         if self.token_atual in self.valid_types:
             self.set_indice(self.indice_atual + 1)
             if self.token_atual != "ident":
-                raise Exception()
+                raise Exception(f"Erro Sintático esperava: ident para sequência PARAMLIST = ((int | float | string) *ident* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}") 
             else:
                 self.set_indice(self.indice_atual + 1)
                 if self.token_atual == ")":
@@ -73,13 +73,13 @@ class AnalisadorSintatico:
                     self.set_indice(self.indice_atual + 1)
                     return self.eh_paramlist()
                 else:
-                    raise Exception
+                    raise Exception(f"Erro Sintático esperava: ) para sequência PARAMLIST = ((int | float | string) ident *)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
     
     def eh_vardecl(self):
         if self.token_atual in self.valid_types:
             self.set_indice(self.indice_atual + 1)
             if self.token_atual != "ident":
-                raise Exception
+                raise Exception(f"Erro Sintático esperava: ident para sequência VARDECL = (int | float | string) *ident* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 if self.token_atual != "[":
@@ -87,11 +87,11 @@ class AnalisadorSintatico:
                 else:
                     self.set_indice(self.indice_atual + 1)
                     if self.token_atual != "int_constant":
-                        raise Exception
+                        raise  Exception(f"Erro Sintático esperava: int_constant para sequência VARDECL = (int | float | string) ident[*int_constant* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                     else: 
                         self.set_indice(self.indice_atual + 1)
                         if self.token_atual != "]":
-                            raise Exception
+                            raise Exception(f"Erro Sintático esperava: ] para sequência VARDECL = (int | float | string) ident[int_constant *]* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                         else: 
                             self.set_indice(self.indice_atual + 1)
                             return True
@@ -109,9 +109,9 @@ class AnalisadorSintatico:
             if self.token_atual == "(":
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_num_expression():
-                    raise
+                    raise  Exception(f"Erro Sintático esperava: NUM_EXPRESSION para sequência FACTOR = {' | '.join([valid_tokens + 'LVALUE'])} (*NUM_EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 if self.token_atual != ")":
-                    raise
+                    raise Exception(f"Erro Sintático esperava: ) para sequência FACTOR = {' | '.join([valid_tokens + 'LVALUE'])} (NUM_EXPRESSION*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 self.set_indice(self.indice_atual + 1)
                 return True
         return False
@@ -128,7 +128,7 @@ class AnalisadorSintatico:
             if self.token_atual in ["*", "/", "%"]:
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_unary_expression():
-                    raise
+                    raise Exception(f"Erro Sintático esperava: UNARY_EXPRESSION para sequência TERM = {' | '.join(['*', '/', '%'])} UNARY_EXPRESSION recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             return True
         return False
     
@@ -138,7 +138,7 @@ class AnalisadorSintatico:
             if self.token_atual in ["+", "-"]:
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_term():
-                    raise
+                    raise  Exception(f"Erro Sintático esperava: TERM para sequência NUM_EXPRESSION = TERM {' | '.join(['+', '-'])} *TERM* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             return True
         return False
 
@@ -150,10 +150,10 @@ class AnalisadorSintatico:
             else:
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_num_expression():
-                    raise Exception
+                    raise Exception(f"Erro Sintático esperava: NUM_EXPRESSION para sequência LVALUE = ident[*NUM_EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 else: 
                     if self.token_atual != "]":
-                        raise Exception
+                        raise Exception(f"Erro Sintático esperava: ] para sequência LVALUE = ident[NUM_EXPRESSION*]* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                     else:
                         self.set_indice(self.indice_atual + 1)
                         return True
@@ -166,7 +166,7 @@ class AnalisadorSintatico:
             if self.token_atual in operators:
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_num_expression():
-                    raise Exception
+                    raise Exception(f"Erro Sintático esperava: NUM_EXPRESSION para sequência EXPRESSION = NUM_EXPRESSION {' | '.join(operators)} *NUM_EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             return True
         return False
     
@@ -174,20 +174,20 @@ class AnalisadorSintatico:
         if self.token_atual == "new":
             self.set_indice(self.indice_atual + 1)
             if self.token_atual not in ["int", "float", "string"]:
-                raise
+                raise Exception(f"Erro Sintático esperava: (int | float | string) para sequência ALLOC_EXPRESSION = new *(int | float | string)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             if self.token_atual == "[":
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_num_expression():
-                    raise 
+                    raise Exception(f"Erro Sintático esperava: NUM_EXPRESSION para sequência ALLOC_EXPRESSION = new (int | float | string)[*NUM_EXPRTESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 if self.token_atual != "]":
-                    raise
+                    raise Exception(f"Erro Sintático esperava: ] para sequência ALLOC_EXPRESSION = new (int | float | string)[NUM_EXPRTESSION*]* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 self.set_indice(self.indice_atual + 1)
             return True
         
     def eh_paramlist_call(self):
         if self.token_atual != "ident":
-            raise Exception()
+            raise Exception(f"Erro Sintático esperava: ident para sequência PARAMLIST_CALL = *ident* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
         else:
             self.set_indice(self.indice_atual + 1)
             if self.token_atual == ")":
@@ -196,7 +196,7 @@ class AnalisadorSintatico:
                 self.set_indice(self.indice_atual + 1)
                 return self.eh_paramlist_call()
             else:
-                raise Exception
+               return False
     
     
     def eh_func_call(self):
@@ -208,9 +208,9 @@ class AnalisadorSintatico:
                 return False
             self.set_indice(self.indice_atual + 1)
             if not self.eh_paramlist_call():
-                raise
+                raise Exception(f"Erro Sintático esperava: PARAMLIST_CALL para sequência FUNC_CALL = ident(*PARAMLIST_CALL* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             if self.token_atual != ")":
-                raise
+                raise Exception(f"Erro Sintático esperava: ) para sequência FUNC_CALL = ident(PARAMLIST_CALL*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             return True
         return False
@@ -218,7 +218,7 @@ class AnalisadorSintatico:
     def eh_atribstat(self):
         if self.eh_lvalue():
             if self.token_atual != "=":
-                raise Exception
+                raise Exception(f"Erro Sintático esperava: = para sequência ATRIBSTAT = LVALUE *=* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 if self.eh_func_call():
@@ -228,7 +228,7 @@ class AnalisadorSintatico:
                 elif self.eh_alloc_expression():
                     return True
                 else:
-                    raise Exception
+                    raise Exception(f"Erro Sintático esperava: (EXPRESSION | ALLOC_EXPRESSION | FUNC_CALL) para sequência ATRIBSTAT = LVALUE = (EXPRESSION | ALLOC_EXPRESSION | FUNC_CALL) recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
         else:
             return False
 
@@ -236,7 +236,7 @@ class AnalisadorSintatico:
         if self.token_atual == "print":
             self.set_indice(self.indice_atual + 1)
             if not self.eh_expression():
-                raise
+                raise Exception(f"Erro Sintático esperava: EXPRESSION para sequência print *EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             return True
         return False
 
@@ -244,7 +244,7 @@ class AnalisadorSintatico:
         if self.token_atual == "read":
             self.set_indice(self.indice_atual + 1)
             if not self.eh_lvalue():
-                raise
+                raise Exception(f"Erro Sintático esperava: LVALUE para sequência read *LVALUE* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             return True
         return False
     
@@ -258,20 +258,20 @@ class AnalisadorSintatico:
         if self.token_atual == "if":
             self.set_indice(self.indice_atual + 1)
             if self.token_atual != "(":
-                raise 
+                raise Exception(f"Erro Sintático esperava: ( para sequência if *(* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             if not self.eh_expression():
-                raise 
+                raise Exception(f"Erro Sintático esperava: EXPRESSION para sequência if (*EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             if self.token_atual != ")":
-                raise 
+                raise Exception(f"Erro Sintático esperava: ) para sequência if (EXPRESSION*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             if not self.eh_statement():
-                raise 
+                raise Exception(f"Erro Sintático esperava: STATEMENT para sequência if (EXPRESSION) STATEMENT recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             
             if self.token_atual == "else":
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_statement():
-                    raise
+                    raise Exception(f"Erro Sintático esperava: STATEMENT para sequência if (EXPRESSION) STATEMENT else *STATEMENT* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             return True
         return False
 
@@ -279,60 +279,60 @@ class AnalisadorSintatico:
         if self.token_atual == "for":
             self.set_indice(self.indice_atual + 1)
             if self.token_atual != "(":
-                raise
+                raise Exception(f"Erro Sintático esperava: ( para sequência for *(* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             if not self.eh_atribstat():
-                raise 
+                raise Exception(f"Erro Sintático esperava: ATRIBSTAT para sequência for(*ATRIBSTAT* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             if self.token_atual != ";":
-                raise 
+                raise Exception(f"Erro Sintático esperava: ; para sequência for(ATRIBSTAT*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             if not self.eh_expression():
-                raise 
+                raise Exception(f"Erro Sintático esperava: EXPRESSION para sequência for(ATRIBSTAT;*EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             if self.token_atual != ";":
-                raise 
+                raise Exception(f"Erro Sintático esperava: ; para sequência for(ATRIBSTAT;EXPRESSION*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             if not self.eh_atribstat():
-                raise 
+                raise Exception(f"Erro Sintático esperava: ATRIBSTAT para sequência for(ATRIBSTAT;EXPRESSION;*ATRIBSTAT* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             if self.token_atual != ")":
-                raise
+                raise Exception(f"Erro Sintático esperava: ) para sequência for(ATRIBSTAT;EXPRESSION;ATRIBSTAT*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)
             if not self.eh_statement():
-                raise
+                raise Exception(f"Erro Sintático esperava: STATEMENT para sequência for(ATRIBSTAT;EXPRESSION;ATRIBSTAT)*STATEMENT* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             return True
         return False
 
     def eh_statement(self):
         if self.eh_vardecl():
             if self.token_atual != ";":
-                raise Exception("Declaração de váriavel sem ';'")
+                raise Exception(f"Erro Sintático esperava: ; para sequência STATEMENT = VARDECL*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 return True
             
         if self.eh_atribstat():
             if self.token_atual != ";":
-                raise Exception("Atribuição de varável sem ';'")
+                raise Exception(f"Erro Sintático esperava: ; para sequência STATEMENT = ATRIBSTAT*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 return True
                 
         if self.eh_print():
             if self.token_atual != ";":
-                raise Exception("print sem ';'")
+                raise Exception(f"Erro Sintático esperava: ; para sequência STATEMENT = PRINT*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 return True
                 
         if self.eh_read():
             if self.token_atual != ";":
-                raise Exception("read sem ';'")
+                raise Exception(f"Erro Sintático esperava: ; para sequência STATEMENT = READ*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 return True
     
         if self.eh_return():
             if self.token_atual != ";":
-                raise Exception("return sem ';'")
+                raise Exception(f"Erro Sintático esperava: ; para sequência STATEMENT = RETURN*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 return True
@@ -347,7 +347,7 @@ class AnalisadorSintatico:
             self.set_indice(self.indice_atual + 1)
             self.eh_statelist()
             if self.token_atual != "}":
-                raise Exception
+                raise Exception(f"Erro Sintático esperava: {'}'} para sequência STATEMENT = {'{'}STATELIST{'*}*'} recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 return True
@@ -355,7 +355,7 @@ class AnalisadorSintatico:
         if self.token_atual == "break":
             self.set_indice(self.indice_atual + 1)
             if self.token_atual != ";":
-                raise Exception
+                raise Exception(f"Erro Sintático esperava: ; para sequência STATEMENT = break*;* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 return True
@@ -379,28 +379,28 @@ class AnalisadorSintatico:
         if self.token_atual == "def":
             self.set_indice(self.indice_atual + 1)
             if self.token_atual != "ident":
-                raise Exception("Esperava um indentificador após uma def")
+                raise Exception(f"Erro Sintático esperava: ident para sequência FUNCDEF = def *ident* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             else:
                 self.set_indice(self.indice_atual + 1)
                 if self.token_atual != "(":
-                    raise Exception("Esperava um '(' após um identificador ao declarar uma função")
+                    raise Exception(f"Erro Sintático esperava: ( para sequência FUNCDEF = def ident*(* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 else:
                     self.set_indice(self.indice_atual + 1)
                     if self.token_atual != ")":
                         if not self.eh_paramlist():
-                            raise Exception("")
+                            raise Exception(f"Erro Sintático esperava: PARAMLIST para sequência FUNCDEF = def ident(*PARAMLIST* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                     if self.token_atual != ")":
-                        raise Exception("")
+                        raise Exception(f"Erro Sintático esperava: ) para sequência FUNCDEF = def ident(PARAMLIST*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                     else:
                         self.set_indice(self.indice_atual + 1)
                         if self.token_atual != "{":
-                            raise Exception("")
+                            raise Exception(f"Erro Sintático esperava: {'{'} para sequência FUNCDEF = def ident(PARAMLIST)*{'{'}* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                         else:
                             self.set_indice(self.indice_atual + 1)
                             if not self.eh_statelist():
-                                raise Exception
+                                raise Exception(f"Erro Sintático esperava: STATELIST para sequência FUNCDEF = def ident(PARAMLIST){'{'}*STATELIST* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                             if self.token_atual != "}":
-                                raise Exception
+                                raise Exception(f"Erro Sintático esperava: {'}'} para sequência FUNCDEF = def ident(PARAMLIST){'{'} STATELIST {'*}*'} recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                             self.set_indice(self.indice_atual + 1)
                             return True
         self.set_indice(indice_inicial)
@@ -421,6 +421,6 @@ class AnalisadorSintatico:
         while self.indice_atual < len(self.lista_tokens):
              if not self.eh_funclist():
                 if not self.eh_statement():
-                    raise
+                    raise Exception(f"Erro Sintático esperava: (FUNCLIST | STATEMENT) para sequência PROGRAM = *(FUNCLIST | STATEMENT)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 else:
                     pass
