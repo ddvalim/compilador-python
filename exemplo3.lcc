@@ -1,0 +1,100 @@
+def soma(int A, int B)
+{
+  int resultado;
+  resultado = A + B;
+  return resultado;
+}
+
+def multiplica(int A, int B)
+{
+  int resultado;
+  resultado = A * B;
+  return resultado;
+}
+
+def maximo(int A, int B)
+{
+  int resultado;
+  if (A > B) {
+      resultado = A;
+      return resultado;
+  } else {
+      resultado = B;
+      return resultado;
+  }
+}
+
+def principal()
+{
+  int vetor;
+  int contador;
+  int iterador;
+  int tamanho_vetor;
+
+  int A;
+  int B;
+  int C;
+  int D;
+  int E;
+  int F;
+
+  A = 4;
+  B = 5;
+  C = 6;
+  D = 7;
+  E = 8;
+  F = 9;
+
+  vetor = new int[10];
+  tamanho_vetor = 10;
+  contador = 0;
+
+  for (iterador = 0; iterador < tamanho_vetor; iterador = iterador + 1) {
+      if (i % 2 == 0) {
+        int R1;
+        int R2;
+        int R3;
+        int R_FINAL;
+
+        R1 = soma(A, B);
+        contador = contador + 1; 
+        R2 = multiplica(C, D);
+        contador = contador + 1;
+        R3 = maximo(E, F);
+        contador = contador + 1;
+
+        R_FINAL = R1 + R2 + R3;
+        vetor[contador] = R_FINAL;
+        iterador = iterador + 1;
+    } else {
+        int R1_ALT;
+        int R2_ALT;
+        int R3_ALT;
+        int R_FINAL_ALT;
+
+        R1_ALT = soma(E, F);
+        contador = contador + 1;
+        R2_ALT = maximo(C, D);
+        contador = contador + 1;
+        R3_ALT = multiplica(A, B);
+        contador = contador + 1;
+
+        R_INTER = R1_ALT + R2_ALT + R3_ALT;
+
+        int R_VEZES_DOIS;
+        int R_VEZES_TRES;
+
+        R_VEZES_DOIS = R_INTER * 2;
+        R_VEZES_TRES = R_INTER * 3
+
+        int R_FINAL;
+
+        R_FINAL = R_VEZES_DOIS + R_VEZES_TRES;
+
+        vetor[contador] = R_FINAL;
+        iterador = iterador + 1;
+    }
+  }
+
+  return;
+}
