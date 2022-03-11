@@ -25,7 +25,7 @@ Este projeto foi desenvolvido utilizando a linguagem de programação Python, se
 
 ### Pré-requisitos
 
-Antes de começar, você vai precisar ter instalado em sua máquina a linguagem Python 3.10.2. Este pacote está disponível [neste link](https://www.python.org/downloads/).
+Antes de começar, você vai precisar ter instalado em sua máquina a linguagem Python 3.8. Este pacote está disponível [neste link](https://www.python.org/downloads/).
 Computadores rodando sobre sistemas operacionais unix-like geralmente possuem esta linguagem pré-instalada. 
 Você pode verificar digitando o comando:
 
@@ -43,11 +43,10 @@ Em caso de negativa, os seguintes links servem como tutoriais de como instalar o
 
 1. Clone o repositório do [compilador-python](https://github.com/ddvalim/compilador-python).
 2. Certifique-se de que as ferramentas citadas anteriormente já estejam instaladas e configuradas na sua máquina.
-3. Execute o `MakeFile`.
 
 ### Executando o programa
 
-1. Em um terminal, execute o programa principal utilizando o comando `python3 main`.
+1. Execute o comando `make run`.
 
 ### Autores
 
