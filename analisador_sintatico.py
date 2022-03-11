@@ -109,9 +109,11 @@ class AnalisadorSintatico:
             if self.token_atual == "(":
                 self.set_indice(self.indice_atual + 1)
                 if not self.eh_num_expression():
-                    raise  Exception(f"Erro Sintático esperava: NUM_EXPRESSION para sequência FACTOR = {' | '.join([valid_tokens + 'LVALUE'])} (*NUM_EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
+                    valid_tokens.append('LVALUE')
+                    raise  Exception(f"Erro Sintático esperava: NUM_EXPRESSION para sequência FACTOR = {' | '.join(valid_tokens)} (*NUM_EXPRESSION* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 if self.token_atual != ")":
-                    raise Exception(f"Erro Sintático esperava: ) para sequência FACTOR = {' | '.join([valid_tokens + 'LVALUE'])} (NUM_EXPRESSION*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
+                    valid_tokens.append('LVALUE')
+                    raise Exception(f"Erro Sintático esperava: ) para sequência FACTOR = {' | '.join(valid_tokens)} (NUM_EXPRESSION*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
                 self.set_indice(self.indice_atual + 1)
                 return True
         return False
@@ -207,8 +209,9 @@ class AnalisadorSintatico:
                 self.set_indice(indice_inicial)
                 return False
             self.set_indice(self.indice_atual + 1)
-            if not self.eh_paramlist_call():
-                raise Exception(f"Erro Sintático esperava: PARAMLIST_CALL para sequência FUNC_CALL = ident(*PARAMLIST_CALL* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
+            if self.token_atual != ")":
+                if not self.eh_paramlist_call():
+                    raise Exception(f"Erro Sintático esperava: PARAMLIST_CALL para sequência FUNC_CALL = ident(*PARAMLIST_CALL* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             if self.token_atual != ")":
                 raise Exception(f"Erro Sintático esperava: ) para sequência FUNC_CALL = ident(PARAMLIST_CALL*)* recebeu {self.token_atual} na linha {self.tabela.recupera_tabela()[self.indice_atual][-1]}")
             self.set_indice(self.indice_atual + 1)

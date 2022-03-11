@@ -1,18 +1,110 @@
-def func1(int A, int B)
-{
-  int SM[2];
-  SM[0] = A + B;
-  SM[1] = B * C;
-  return;
+def area_triangulo(){
+  float a; float b; float c;
+  print "Calcula área de um triângulo";
+  print "Favor informe a largura do triângulo";
+  read a;
+  print "Favor informe a altura do triângulo";
+  read b;
+  c = (a * b) /2;
+  print "área do triângulo informado" + c;
 }
 
-def principal()
-{
-  int C;
-  int D;
-  int R;
-  C = 4;
-  D = 5;
-  R = func1(C, D);
-  return;
+
+def area_quadrado(){
+  float a; float c;
+  print "Calcula área de um quadrado";
+  print "Favor informe a medida do lado do quadrado";
+  read a;
+  b = a * a;
+  print "área do quadrado informado" + b;
+}
+
+def area_retangulo(){
+  float a; float b; float c;
+  print "Calcula área de um retângulo";
+  print "Favor informe a largura do retângulo";
+  read a;
+  print "Favor informe a altura do retângulo";
+  read b;
+  c = a * b;
+  print "área do retângulo informado" + c;
+}
+
+
+def area_trapezio(){
+  float a; float b; float c; float d;
+  print "Calcula área de um trapézio";
+  print "Favor informe a largura da base maior do trapézio";
+  read a;
+  print "Favor informe a largura da base menor do trapézio";
+  read b;
+  print "Favor informe a altura do trapézio";
+  read c;
+  d = ((a+b) * h)/2;
+  print "área do trapézio informado" + c;
+}
+
+
+def area_circulo(){
+  float a;
+  print "Calcula área de um circulo";
+  print "Favor informe a largura da base maior do circulo";
+  read a;
+  a = (a * a) * math_pi;
+  print "área do circulo informado" + c;
+}
+
+def area_losango(){
+  float a; float b; float c;
+  print "Calcula área de um losango";
+  print "Favor informe a uma diagonal";
+  read a;
+  print "Favor informe a outra diagonal";
+  read b;
+  c = (a * b)/2;
+  print "área do losango informado" + c;
+}
+
+
+def calculadora_geometrica(){
+  int i;
+  int aux;
+  for (i = 0; i > -1; i = i+1){
+
+    int entrada;
+    if (i == 0){
+      print "Bem vindo a calculadora geométrica";
+    }
+    print "Se você quer calcular a área de uma figura digite 1";
+    print "Se você deseja sair digite 9";
+    read entrada;
+    if (entrada == 1) {
+      print "Informe a figura que deseja calcular a área";
+      print "quadrado - 1";
+      print "triangulo - 2";
+      print "retângulo - 3";
+      print "trapézio - 4";
+      print "círculo - 5";
+      print "losango - 6";
+      print "sair - 9";
+      read entrada;
+      if (entrada == 1){
+        aux = area_quadrado();
+      } else if (entrada == 2){
+        aux = area_triangulo();
+      } else if (entrada == 3){
+        aux = area_retangulo();
+      } else if (entrada == 4){
+        aux = area_trapezio();
+      } else if (entrada == 5){
+        aux = area_circulo();
+      } else if (entrada == 6){
+        aux = area_losango();
+      } else if (entrada == 9){
+        break;
+      }
+    } else if (entrada == 9)
+      break;
+  } 
+  print "Muito obrigado por usar a calculadora geométrica";
 }

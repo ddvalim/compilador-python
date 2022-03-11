@@ -236,6 +236,7 @@ class AnalisadorLexico:
             {'nome': 'F_MAIUSCULO', 'token': 'F'},
             {'nome': 'G_MAIUSCULO', 'token': 'G'},
             {'nome': 'H_MAIUSCULO', 'token': 'H'},
+            {'nome': 'I_MAIUSCULO', 'token': 'I'},
             {'nome': 'J_MAIUSCULO', 'token': 'J'},
             {'nome': 'K_MAIUSCULO', 'token': 'K'},
             {'nome': 'L_MAIUSCULO', 'token': 'L'},
@@ -455,7 +456,7 @@ class AnalisadorLexico:
                         if (indice_caractere + 1 < tamanho_linha) and self.eh_digito(linha[indice_caractere + 1]):
                             raise Exception(f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
 
-                        elif not self.eh_operador(caractere_atual) and caractere_atual != " " and caractere_atual != ";" and caractere_atual != "\n":
+                        elif not self.eh_operador(caractere_atual) and caractere_atual != " " and caractere_atual != ";" and caractere_atual != "\n" and caractere_atual != ")":
                             raise Exception(f'Erro léxico! - Número de ponto flutuante mal formado - Linha: {numero_linha} - Coluna: {indice_caractere}')
 
                         if (nro_digitos_float > 0):
