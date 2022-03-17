@@ -46,7 +46,7 @@ Em caso de negativa, os seguintes links servem como tutoriais de como instalar o
 
 ### Executando o programa
 
-1. Execute o comando `make run`.
+1. Execute o comando `make`.
 
 ### Autores
 
