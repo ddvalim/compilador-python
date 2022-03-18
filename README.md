@@ -11,7 +11,7 @@
 <h1 align="center"> 
   🚀 Status do projeto 🚀
 </h1>
-<h4 align="center"> Em Andamento </h4>
+<h4 align="center"> Concluído </h4>
 
 ### Objetivo
 
