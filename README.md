@@ -41,12 +41,12 @@ Em caso de negativa, os seguintes links servem como tutoriais de como instalar o
 
 ### Instalação
 
-1. Clone o repositório do [compilador-python](https://github.com/ddvalim/compilador-python).
+1. Descompactar o arquivo .zip _compilador-python-master_.
 2. Certifique-se de que as ferramentas citadas anteriormente já estejam instaladas e configuradas na sua máquina.
 
 ### Executando o programa
 
-1. Execute o comando `make`.
+1. Dentro do diretório do projeto, execute o comando `make`.
 
 ### Autores
 
